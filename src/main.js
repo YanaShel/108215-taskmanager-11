@@ -1,16 +1,19 @@
-import {createSiteMenuTemplate} from "./components/site-menu.js";
-import {createFilterTemplate} from "./components/filter.js";
-import {createBordTemplate} from "./components/board.js";
-import {createSortingTemplate} from "./components/sorting.js";
-import {createTaskTemplate} from "./components/task.js";
-import {createTaskEditTemplate} from "./components/task-edit.js";
-import {createLoadMoreButtonTemplate} from "./components/load-more-button.js";
+import {createSiteMenuTemplate} from "./components/site-menu";
+import {createFilterTemplate} from "./components/filter";
+import {createBordTemplate} from "./components/board";
+import {createSortingTemplate} from "./components/sorting";
+import {createTaskTemplate} from "./components/task";
+import {createTaskEditTemplate} from "./components/task-edit";
+import {createLoadMoreButtonTemplate} from "./components/load-more-button";
+import {generateFilters} from "./mock/filter";
 
 const TASK_COUNT_DEFAULT = 1;
 const TASK_COUNT = 3;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
+
+const filters = generateFilters();
 
 const render = (container, template, count = TASK_COUNT_DEFAULT, place = `beforeend`) => {
   for (let i = 0; i < count; i++) {
@@ -19,7 +22,7 @@ const render = (container, template, count = TASK_COUNT_DEFAULT, place = `before
 };
 
 render(siteHeaderElement, createSiteMenuTemplate());
-render(siteMainElement, createFilterTemplate());
+render(siteMainElement, createFilterTemplate(filters));
 render(siteMainElement, createBordTemplate());
 
 const boardElement = siteMainElement.querySelector(`.board`);
