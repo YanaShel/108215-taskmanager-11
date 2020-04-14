@@ -16,7 +16,6 @@ const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
 const filters = generateFilters();
 const tasks = generateTasks(TASK_COUNT);
 
@@ -43,6 +42,8 @@ const renderPartOfTasks = (begin, end) => {
 };
 const addHandlerToLoadMoreButton = () => {
   const loadMoreButton = boardElement.querySelector(`.load-more`);
+  let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
+
   loadMoreButton.addEventListener(`click`, () => {
     const prevTasksCount = showingTasksCount;
     showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
@@ -55,7 +56,7 @@ const addHandlerToLoadMoreButton = () => {
   });
 };
 
-renderPartOfTasks(1, showingTasksCount);
+renderPartOfTasks(1, SHOWING_TASKS_COUNT_ON_START);
 addHandlerToLoadMoreButton();
 
 
