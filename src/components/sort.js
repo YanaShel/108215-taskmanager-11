@@ -1,20 +1,13 @@
 import {createElement} from "../util";
 
-const createSortTemplate = () =>{
-  return `<div class="board__filter-list">
-             <a href="#" class="board__filter" data-sort-type="default">SORT BY DEFAULT</a>
-             <a href="#" class="board__filter" data-sort-type="date-up">SORT BY DATE up</a>
-             <a href="#" class="board__filter" data-sort-type="date-down">SORT BY DATE down</a>
-         </div>`;
-};
-
 export default class Sort {
-  constructor() {
+  constructor(sortList) {
+    this._sortList = sortList;
     this._element = null;
   }
 
   getTemplate() {
-    return createSortTemplate();
+    return `<div class="board__filter-list">${this.createSortItems(this._sortList)}</div>`;
   }
 
   getElement() {
@@ -28,4 +21,13 @@ export default class Sort {
   removeElement() {
     this._element = null;
   }
+
+  createSortItem(item) {
+    return `<a href="#" class="board__filter" data-sort-type="default">${item}</a>`;
+  }
+
+  createSortItems(items) {
+    return items.map((item) => this.createSortItem(item)).join(`\n`);
+  }
+
 }

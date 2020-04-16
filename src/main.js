@@ -8,6 +8,7 @@ import TaskEditComponent from "./components/task-edit";
 import LoadMoreButtonComponent from "./components/load-more-button";
 import {generateFilters} from "./mock/filter";
 import {generateTasks} from "./mock/task";
+import {SITE_MENU_NAMES, SORT_LIST} from "./data";
 import {render, RenderPosition} from "./util";
 
 const TASK_COUNT = 15;
@@ -41,7 +42,7 @@ const renderTask = (taskListElement, task) => {
 };
 
 const renderBoard = (boardComponent, tasks) => {
-  render(boardComponent.getElement(), new SortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent.getElement(), new SortComponent(SORT_LIST).getElement(), RenderPosition.BEFOREEND);
   render(boardComponent.getElement(), new TasksComponent().getElement(), RenderPosition.BEFOREEND);
 
   const taskListElement = boardComponent.getElement().querySelector(`.board__tasks`);
@@ -70,7 +71,7 @@ const renderBoard = (boardComponent, tasks) => {
 const tasks = generateTasks(TASK_COUNT);
 const filters = generateFilters();
 
-render(siteHeaderElement, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new SiteMenuComponent(SITE_MENU_NAMES).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
 const boardComponent = new BoardComponent();

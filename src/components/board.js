@@ -1,16 +1,12 @@
 import {createElement} from "../util";
 
-const createBordTemplate = () => {
-  return `<section class="board container"></section>`;
-};
-
 export default class Board {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createBordTemplate();
+    return `<section class="board container"></section>`;
   }
 
   getElement() {

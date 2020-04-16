@@ -1,9 +1,48 @@
 import {COLORS, DAYS, MONTHS_NAMES} from "../data";
 import {createElement, formatTime} from "../util";
 
-const createColorsMarkup = (colors, currentColor) => {
-  return colors.map((color, index) => {
-    return `<input
+export default class TaskEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return this.createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  createRepeatingDaysMarkup(days, repeatingDays) {
+    return days.map((day, index) => {
+      const isChecked = repeatingDays[day];
+      return `<input
+            class="visually-hidden card__repeat-day-input"
+            type="checkbox"
+            id="repeat-${day}-${index}"
+            name="repeat"
+            value="${day}"
+            ${isChecked ? `checked` : ``}
+          />
+          <label class="card__repeat-day" for="repeat-${day}-${index}"
+            >${day}</label
+          >`;
+    }).join(`\n`);
+  }
+
+  createColorsMarkup(colors, currentColor) {
+    return colors.map((color, index) => {
+      return `<input
                type="radio"
                id="color-${color}-${index}"
                class="card__color-input card__color-input--${color} visually-hidden"
@@ -16,37 +55,26 @@ const createColorsMarkup = (colors, currentColor) => {
                class="card__color card__color--${color}"
             >${color}</label
             >`;
-  }).join(`\n`);
-};
+    }).join(`\n`);
+  }
 
-const createRepeatingDaysMarkup = (days, repeatingDays) => {
-  return days.map((day, index) => {
-    const isChecked = repeatingDays[day];
-    return `<input
-            class="visually-hidden card__repeat-day-input"
-            type="checkbox"
-            id="repeat-${day}-${index}"
-            name="repeat"
-            value="${day}"
-            ${isChecked ? `checked` : ``}
-          />
-          <label class="card__repeat-day" for="repeat-${day}-${index}"
-            >${day}</label
-          >`;
-  }).join(`\n`);
-};
+  createTaskEditTemplate(task) {
+    const {description, dueDate, color, repeatingDays} = task;
 
-const createTaskEditTemplate = (task) => {
-  const {description, dueDate, color, repeatingDays} = task;
+    const isExpired = dueDate instanceof Date && dueDate < Date.now();
+    const isDateShowing = !!dueDate;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const isDateShowing = !!dueDate;
+    const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
+    const time = isDateShowing ? formatTime(dueDate) : ``;
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
-  const time = isDateShowing ? formatTime(dueDate) : ``;
-  const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
+    const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
+    const repeatClass = isRepeatingTask ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
 
-  return `<article class="card card--edit card--${color} ${isRepeatingTask ? `card--repeat` : ``} ${isExpired ? `card--deadline` : ``}">
+    const colorsMarkup = this.createColorsMarkup(COLORS, color);
+    const repeatingDaysMarkup = this.createRepeatingDaysMarkup(DAYS, repeatingDays);
+
+    return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__color-bar">
@@ -90,7 +118,7 @@ const createTaskEditTemplate = (task) => {
 
                       ${isRepeatingTask ? `<fieldset class="card__repeat-days">
                         <div class="card__repeat-days-inner">
-                          ${createRepeatingDaysMarkup(DAYS, repeatingDays)}
+                          ${repeatingDaysMarkup}
                          </div>
                       </fieldset>` : `` }
                     </div>
@@ -99,7 +127,7 @@ const createTaskEditTemplate = (task) => {
                   <div class="card__colors-inner">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
-                      ${createColorsMarkup(COLORS, color)}
+                      ${colorsMarkup}
                     </div>
                   </div>
                  </div>
@@ -111,28 +139,5 @@ const createTaskEditTemplate = (task) => {
               </div>
             </form>
           </article>`;
-};
-
-export default class TaskEdit {
-  constructor(task) {
-    this._task = task;
-    this._element = null;
-  }
-
-  getTemplate() {
-    return createTaskEditTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
-
