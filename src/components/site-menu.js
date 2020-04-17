@@ -1,34 +1,35 @@
-const createSiteMenuTemplate = () => {
-  return (
-    `<section class="control__btn-wrap">
-          <input
-            type="radio"
-            name="control"
-            id="control__new-task"
-            class="control__input visually-hidden"
-          />
-          <label for="control__new-task" class="control__label control__label--new-task"
-            >+ ADD NEW TASK</label
-          >
-          <input
-            type="radio"
-            name="control"
-            id="control__task"
-            class="control__input visually-hidden"
-            checked
-          />
-          <label for="control__task" class="control__label">TASKS</label>
-          <input
-            type="radio"
-            name="control"
-            id="control__statistic"
-            class="control__input visually-hidden"
-          />
-          <label for="control__statistic" class="control__label"
-            >STATISTICS</label
-          >
-        </section>`
-  );
-};
+import {createElement} from "../dom-util";
 
-export {createSiteMenuTemplate};
+export default class SiteMenuItem {
+  constructor(siteMenuId, siteMenuName, isSelected) {
+    this._siteMenuId = siteMenuId;
+    this._siteMenuName = siteMenuName;
+    this._isSelected = isSelected;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return `<input
+              type="radio"
+              name="control"
+              id="control__${this._siteMenuId.toLowerCase()}"
+              class="control__input visually-hidden"
+              ${this._isSelected ? `checked` : ``}
+            />
+            <label for="control__${this._siteMenuId.toLowerCase()}" class="control__label control__label--${this._siteMenuId.toLowerCase()}"
+              >${this._siteMenuName}</label
+            >`;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

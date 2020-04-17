@@ -1,12 +1,13 @@
 import {createElement} from "../dom-util";
 
-export default class LoadMoreButton {
-  constructor() {
+export default class Sort {
+  constructor(sortItem) {
+    this._sortItem = sortItem;
     this._element = null;
   }
 
   getTemplate() {
-    return `<button class="load-more" type="button">load more</button>`;
+    return `<a href="#" class="board__filter" data-sort-type="default">${this._sortItem}</a>`;
   }
 
   getElement() {
@@ -20,4 +21,5 @@ export default class LoadMoreButton {
   removeElement() {
     this._element = null;
   }
+
 }

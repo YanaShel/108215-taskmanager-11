@@ -1,58 +1,30 @@
-import {COLORS, DAYS, MONTH_NAMES} from "../const";
-import {formatTime} from "../utils";
+import {COLORS, DAYS, MONTHS_NAMES} from "../data";
+import {formatTime} from "../util";
+import {createElement} from "../dom-util";
 
-const createColorsMarkup = (colors, currentColor) => {
-  return colors.map((color, index) => {
-    return `<input
-            type="radio"
-            id="color-${color}-${index}"
-            class="card__color-input card__color-input--${color} visually-hidden"
-            name="color"
-            value="${color}"
-            ${currentColor === color ? `checked` : ``}
-          />
-          <label
-            for="color-${color}-${index}"
-            class="card__color card__color--${color}"
-            >${color}</label
-           >`;
-  }).join(`\n`);
-};
+export default class TaskEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
 
-const createRepeatingDaysMarkup = (days, repeatingDays) => {
-  return days.map((day, index) => {
-    const isChecked = repeatingDays[day];
-    return `<input
-            class="visually-hidden card__repeat-day-input"
-            type="checkbox"
-            id="repeat-${day}-${index}"
-            name="repeat"
-            value="${day}"
-            ${isChecked ? `checked` : ``}
-          />
-          <label class="card__repeat-day" for="repeat-${day}-${index}"
-            >${day}</label
-          >`;
-  }).join(`\n`);
-};
+  getTemplate() {
+    const {description, dueDate, color, repeatingDays} = this._task;
 
-const createTaskEditTemplate = (task) => {
-  const {description, dueDate, color, repeatingDays} = task;
+    const isExpired = dueDate instanceof Date && dueDate < Date.now();
+    const isDateShowing = !!dueDate;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const isDateShowing = !!dueDate;
+    const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
+    const time = isDateShowing ? formatTime(dueDate) : ``;
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
-  const time = isDateShowing ? formatTime(dueDate) : ``;
+    const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
+    const repeatClass = isRepeatingTask ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
 
-  const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
-  const repeatClass = isRepeatingTask ? `card--repeat` : ``;
-  const deadlineClass = isExpired ? `card--deadline` : ``;
+    const colorsMarkup = this._createColorsMarkup(COLORS, color);
+    const repeatingDaysMarkup = this._createRepeatingDaysMarkup(DAYS, repeatingDays);
 
-  const colorsMarkup = createColorsMarkup(COLORS, color);
-  const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, repeatingDays);
-
-  return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
+    return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__color-bar">
@@ -117,6 +89,52 @@ const createTaskEditTemplate = (task) => {
               </div>
             </form>
           </article>`;
-};
+  }
 
-export {createTaskEditTemplate};
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  _createRepeatingDaysMarkup(days, repeatingDays) {
+    return days.map((day, index) => {
+      const isChecked = repeatingDays[day];
+      return `<input
+            class="visually-hidden card__repeat-day-input"
+            type="checkbox"
+            id="repeat-${day}-${index}"
+            name="repeat"
+            value="${day}"
+            ${isChecked ? `checked` : ``}
+          />
+          <label class="card__repeat-day" for="repeat-${day}-${index}"
+            >${day}</label
+          >`;
+    }).join(`\n`);
+  }
+
+  _createColorsMarkup(colors, currentColor) {
+    return colors.map((color, index) => {
+      return `<input
+               type="radio"
+               id="color-${color}-${index}"
+               class="card__color-input card__color-input--${color} visually-hidden"
+               name="color"
+               value="${color}"
+               ${currentColor === color ? `checked` : ``}
+            />
+            <label
+               for="color-${color}-${index}"
+               class="card__color card__color--${color}"
+            >${color}</label
+            >`;
+    }).join(`\n`);
+  }
+}

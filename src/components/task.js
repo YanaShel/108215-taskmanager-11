@@ -1,22 +1,28 @@
-import {MONTH_NAMES} from "../const";
-import {formatTime} from "../utils";
+import {MONTHS_NAMES} from "../data";
+import {formatTime} from "../util";
+import {createElement} from "../dom-util";
 
-const createTaskTemplate = (task) => {
-  const {description, dueDate, color, repeatingDays, isArchive, isFavorite} = task;
+export default class Task {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const isDateShowing = !!dueDate;
+  getTemplate() {
+    const {description, dueDate, color, repeatingDays, isArchive, isFavorite} = this._task;
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
+    const isExpired = dueDate instanceof Date && dueDate < Date.now();
+    const isDateShowing = !!dueDate;
 
-  const time = isDateShowing ? formatTime(dueDate) : ``;
+    const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
+    const time = isDateShowing ? formatTime(dueDate) : ``;
 
-  const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
-  const deadlineClass = isExpired ? `card--deadline` : ``;
-  const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
-  const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
+    const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
+    const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
+    const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
 
-  return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+    return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -59,6 +65,17 @@ const createTaskTemplate = (task) => {
               </div>
             </div>
           </article>`;
-};
+  }
 
-export {createTaskTemplate};
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
