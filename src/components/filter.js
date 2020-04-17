@@ -1,13 +1,26 @@
-import {createElement} from "../util";
+import {createElement} from "../dom-util";
 
 export default class Filter {
-  constructor(filters) {
-    this._filters = filters;
+  constructor(filter, count, isChecked) {
+    this._filter = filter;
+    this._count = count;
+    this._isChecked = isChecked;
     this._element = null;
   }
 
   getTemplate() {
-    return this.createFilterTemplate(this._filters);
+    return `<div>
+              <input
+                type="radio"
+                id="filter__${this._filter}"
+                class="filter__input visually-hidden"
+                name="filter"
+                ${this._isChecked ? `checked` : ``}
+               />
+              <label for="filter__${this._filter}" class="filter__label"
+              >${this._filter} <span class="filter__${this._filter}-count">${this._count}</span></label
+              >
+            </div>`;
   }
 
   getElement() {
@@ -20,26 +33,5 @@ export default class Filter {
 
   removeElement() {
     this._element = null;
-  }
-
-  createFilterMarkup({title, count}, selected) {
-    return `<input
-             type="radio"
-             id="filter__${title}"
-             class="filter__input visually-hidden"
-             name="filter"
-             ${selected ? `checked` : ``}
-            />
-            <label for="filter__${title}" class="filter__label"
-            >${title} <span class="filter__${title}-count">${count}</span></label
-            >`;
-  }
-
-  createFilters(filters) {
-    return filters.map((name, i) => this.createFilterMarkup(name, i === 0)).join(`\n`);
-  }
-
-  createFilterTemplate(filters) {
-    return `<section class="main__filter filter container">${this.createFilters(filters)}</section>`;
   }
 }

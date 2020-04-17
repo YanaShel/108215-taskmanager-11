@@ -1,5 +1,6 @@
 import {MONTHS_NAMES} from "../data";
-import {createElement, formatTime} from "../util";
+import {formatTime} from "../util";
+import {createElement} from "../dom-util";
 
 export default class Task {
   constructor(task) {
@@ -8,23 +9,7 @@ export default class Task {
   }
 
   getTemplate() {
-    return this.createTaskTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  createTaskTemplate(task) {
-    const {description, dueDate, color, repeatingDays, isArchive, isFavorite} = task;
+    const {description, dueDate, color, repeatingDays, isArchive, isFavorite} = this._task;
 
     const isExpired = dueDate instanceof Date && dueDate < Date.now();
     const isDateShowing = !!dueDate;
@@ -32,19 +17,24 @@ export default class Task {
     const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
     const time = isDateShowing ? formatTime(dueDate) : ``;
 
-    return `<article class="card card--${color} ${Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``} ${isExpired ? `card--deadline` : ``}">
+    const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
+    const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
+    const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
+
+    return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
                   <button type="button" class="card__btn card__btn--edit">
                     edit
                   </button>
-                  <button type="button" class="card__btn card__btn--archive  ${isArchive ? `` : `card__btn--disabled`}">
+                  <button type="button" class="card__btn card__btn--archive  ${archiveButtonInactiveClass}">
                     archive
                   </button>
                   <button
                     type="button"
-                    class="card__btn card__btn--favorites card__btn--favorites ${isFavorite ? `` : `card__btn--disabled`}"
+                    class="card__btn card__btn--favorites card__btn--favorites ${favoriteButtonInactiveClass}"
                   >
                     favorites
                   </button>
@@ -75,5 +65,17 @@ export default class Task {
               </div>
             </div>
           </article>`;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }

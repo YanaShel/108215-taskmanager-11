@@ -1,13 +1,13 @@
-import {createElement} from "../util";
+import {createElement} from "../dom-util";
 
 export default class Sort {
-  constructor(sortList) {
-    this._sortList = sortList;
+  constructor(sortItem) {
+    this._sortItem = sortItem;
     this._element = null;
   }
 
   getTemplate() {
-    return `<div class="board__filter-list">${this.createSortItems(this._sortList)}</div>`;
+    return `<a href="#" class="board__filter" data-sort-type="default">${this._sortItem}</a>`;
   }
 
   getElement() {
@@ -20,14 +20,6 @@ export default class Sort {
 
   removeElement() {
     this._element = null;
-  }
-
-  createSortItem(item) {
-    return `<a href="#" class="board__filter" data-sort-type="default">${item}</a>`;
-  }
-
-  createSortItems(items) {
-    return items.map((item) => this.createSortItem(item)).join(`\n`);
   }
 
 }

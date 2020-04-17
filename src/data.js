@@ -30,14 +30,3 @@ export const MONTHS_NAMES = [
   `November`,
   `December`,
 ];
-
-export const SITE_MENU_NAMES = [
-  `TASKS`,
-  `STATISTICS`
-];
-
-export const SORT_LIST = [
-  `SORT BY DEFAULT`,
-  `SORT BY DATE up`,
-  `SORT BY DATE down`
-];

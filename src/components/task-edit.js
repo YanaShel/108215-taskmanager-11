@@ -1,5 +1,6 @@
 import {COLORS, DAYS, MONTHS_NAMES} from "../data";
-import {createElement, formatTime} from "../util";
+import {formatTime} from "../util";
+import {createElement} from "../dom-util";
 
 export default class TaskEdit {
   constructor(task) {
@@ -8,58 +9,7 @@ export default class TaskEdit {
   }
 
   getTemplate() {
-    return this.createTaskEditTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  createRepeatingDaysMarkup(days, repeatingDays) {
-    return days.map((day, index) => {
-      const isChecked = repeatingDays[day];
-      return `<input
-            class="visually-hidden card__repeat-day-input"
-            type="checkbox"
-            id="repeat-${day}-${index}"
-            name="repeat"
-            value="${day}"
-            ${isChecked ? `checked` : ``}
-          />
-          <label class="card__repeat-day" for="repeat-${day}-${index}"
-            >${day}</label
-          >`;
-    }).join(`\n`);
-  }
-
-  createColorsMarkup(colors, currentColor) {
-    return colors.map((color, index) => {
-      return `<input
-               type="radio"
-               id="color-${color}-${index}"
-               class="card__color-input card__color-input--${color} visually-hidden"
-               name="color"
-               value="${color}"
-               ${currentColor === color ? `checked` : ``}
-            />
-            <label
-               for="color-${color}-${index}"
-               class="card__color card__color--${color}"
-            >${color}</label
-            >`;
-    }).join(`\n`);
-  }
-
-  createTaskEditTemplate(task) {
-    const {description, dueDate, color, repeatingDays} = task;
+    const {description, dueDate, color, repeatingDays} = this._task;
 
     const isExpired = dueDate instanceof Date && dueDate < Date.now();
     const isDateShowing = !!dueDate;
@@ -71,8 +21,8 @@ export default class TaskEdit {
     const repeatClass = isRepeatingTask ? `card--repeat` : ``;
     const deadlineClass = isExpired ? `card--deadline` : ``;
 
-    const colorsMarkup = this.createColorsMarkup(COLORS, color);
-    const repeatingDaysMarkup = this.createRepeatingDaysMarkup(DAYS, repeatingDays);
+    const colorsMarkup = this._createColorsMarkup(COLORS, color);
+    const repeatingDaysMarkup = this._createRepeatingDaysMarkup(DAYS, repeatingDays);
 
     return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
             <form class="card__form" method="get">
@@ -139,5 +89,52 @@ export default class TaskEdit {
               </div>
             </form>
           </article>`;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  _createRepeatingDaysMarkup(days, repeatingDays) {
+    return days.map((day, index) => {
+      const isChecked = repeatingDays[day];
+      return `<input
+            class="visually-hidden card__repeat-day-input"
+            type="checkbox"
+            id="repeat-${day}-${index}"
+            name="repeat"
+            value="${day}"
+            ${isChecked ? `checked` : ``}
+          />
+          <label class="card__repeat-day" for="repeat-${day}-${index}"
+            >${day}</label
+          >`;
+    }).join(`\n`);
+  }
+
+  _createColorsMarkup(colors, currentColor) {
+    return colors.map((color, index) => {
+      return `<input
+               type="radio"
+               id="color-${color}-${index}"
+               class="card__color-input card__color-input--${color} visually-hidden"
+               name="color"
+               value="${color}"
+               ${currentColor === color ? `checked` : ``}
+            />
+            <label
+               for="color-${color}-${index}"
+               class="card__color card__color--${color}"
+            >${color}</label
+            >`;
+    }).join(`\n`);
   }
 }
