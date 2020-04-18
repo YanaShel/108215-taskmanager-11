@@ -7,6 +7,7 @@ import SortContainerComponent from "./components/sort-container";
 import SortComponent from "./components/sort";
 import TaskComponent from "./components/task";
 import TasksComponent from "./components/tasks";
+import NoTasksComponent from "./components/no-tasks";
 import TaskEditComponent from "./components/task-edit";
 import LoadMoreButtonComponent from "./components/load-more-button";
 import {generateTasks} from "./mock/task";
@@ -97,6 +98,13 @@ const renderSort = (sortContainer, sortItems) => {
   });
 };
 const renderBoard = (boardComponent, tasks) => {
+  const isAllTasksArchived = tasks.every((task) => task.isArchive);
+
+  if (isAllTasksArchived) {
+    render(boardComponent.getElement(), new NoTasksComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
   renderSort(sortContainerComponent, SORT_ITEMS);
 
   render(boardComponent.getElement(), new TasksComponent().getElement(), RenderPosition.BEFOREEND);
