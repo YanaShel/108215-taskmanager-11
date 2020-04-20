@@ -1,12 +1,12 @@
-import {createElement} from "../dom-util";
+import {createElement} from "../../util/dom-util";
 
-export default class SortContainer {
+export default class LoadMoreButton {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return `<div class="board__filter-list"></div>`;
+    return `<button class="load-more" type="button">load more</button>`;
   }
 
   getElement() {

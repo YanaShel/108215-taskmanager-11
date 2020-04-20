@@ -1,6 +1,6 @@
 export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
+  AFTER_BEGIN: `afterbegin`,
+  BEFORE_END: `beforeend`,
 };
 
 export const createElement = (template) => {
@@ -13,9 +13,9 @@ export const createElement = (template) => {
   }
 };
 
-export const render = (container, element, place) => {
+export const render = (container, element, place = RenderPosition.BEFORE_END) => {
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
+    case RenderPosition.AFTER_BEGIN:
       if (element.length > 1) {
         Array.from(element).forEach((it) => {
           container.prepend(it);
@@ -24,7 +24,7 @@ export const render = (container, element, place) => {
         container.prepend(element);
       }
       break;
-    case RenderPosition.BEFOREEND:
+    case RenderPosition.BEFORE_END:
       if (element.length > 1) {
         Array.from(element).forEach((it) => {
           container.append(it);

@@ -1,6 +1,6 @@
-import {MONTHS_NAMES} from "../data";
-import {formatTime} from "../util";
-import {createElement} from "../dom-util";
+import {MONTHS_NAMES} from "../../util/data";
+import {formatTime} from "../../util/util";
+import {createElement} from "../../util/dom-util";
 
 export default class Task {
   constructor(task) {

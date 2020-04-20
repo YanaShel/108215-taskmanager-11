@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util";
+import {createElement} from "../../util/dom-util";
 
 export default class Filter {
   constructor(filter, count, isChecked) {

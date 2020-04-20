@@ -1,12 +1,14 @@
-import {createElement} from "../dom-util";
+import {createElement} from "../../util/dom-util";
 
-export default class Tasks {
+export default class NoTasks {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return `<div class="board__tasks"></div>`;
+    return `<p class="board__no-tasks">
+                Click «ADD NEW TASK» in menu to create your first task
+            </p>`;
   }
 
   getElement() {
