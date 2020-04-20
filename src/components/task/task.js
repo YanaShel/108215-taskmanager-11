@@ -1,11 +1,12 @@
+import AbstractComponent from "../abstract-component";
 import {MONTHS_NAMES} from "../../util/data";
 import {formatTime} from "../../util/util";
-import {createElement} from "../../util/dom-util";
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor(task) {
+    super();
+
     this._task = task;
-    this._element = null;
   }
 
   getTemplate() {
@@ -65,17 +66,5 @@ export default class Task {
               </div>
             </div>
           </article>`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

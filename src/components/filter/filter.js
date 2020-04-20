@@ -1,7 +1,9 @@
-import {createElement} from "../../util/dom-util";
+import AbstractComponent from "../abstract-component";
 
-export default class Filter {
+export default class Filter extends AbstractComponent {
   constructor(filter, count, isChecked) {
+    super();
+
     this._filter = filter;
     this._count = count;
     this._isChecked = isChecked;
@@ -19,17 +21,5 @@ export default class Filter {
             <label for="filter__${this._filter}" class="filter__label"
               >${this._filter} <span class="filter__${this._filter}-count">${this._count}</span></label
             >`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,9 +1,10 @@
-import {createElement} from "../../util/dom-util";
+import AbstractComponent from "../abstract-component";
 
-export default class MenuItem {
+export default class MenuItem extends AbstractComponent {
   constructor(item) {
+    super();
+
     this._item = item;
-    this._element = null;
   }
 
   getTemplate() {
@@ -18,17 +19,5 @@ export default class MenuItem {
             <label for="control__${id.toLowerCase()}" class="control__label control__label--${id.toLowerCase()}"
               >${name}</label
             >`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
