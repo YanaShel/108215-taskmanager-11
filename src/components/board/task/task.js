@@ -1,11 +1,12 @@
-import {MONTHS_NAMES} from "../data";
-import {formatTime} from "../util";
-import {createElement} from "../dom-util";
+import AbstractComponent from "../../abstract-component";
+import {MONTHS_NAMES} from "../../../util/data";
+import {formatTime} from "../../../util/common";
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor(task) {
+    super();
+
     this._task = task;
-    this._element = null;
   }
 
   getTemplate() {
@@ -22,7 +23,8 @@ export default class Task {
     const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
     const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
 
-    return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+    return (
+      `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -64,18 +66,12 @@ export default class Task {
                 </div>
               </div>
             </div>
-          </article>`;
+          </article>`
+    ).trim();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickListener(listener) {
+    this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, listener);
   }
 }

@@ -1,11 +1,12 @@
-import {COLORS, DAYS, MONTHS_NAMES} from "../data";
-import {formatTime} from "../util";
-import {createElement} from "../dom-util";
+import AbstractComponent from "../../abstract-component";
+import {COLORS, DAYS, MONTHS_NAMES} from "../../../util/data";
+import {formatTime} from "../../../util/common";
 
-export default class TaskEdit {
+export default class TaskEdit extends AbstractComponent {
   constructor(task) {
+    super();
+
     this._task = task;
-    this._element = null;
   }
 
   getTemplate() {
@@ -91,16 +92,9 @@ export default class TaskEdit {
           </article>`;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitListener(listener) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, listener);
   }
 
   _createRepeatingDaysMarkup(days, repeatingDays) {
