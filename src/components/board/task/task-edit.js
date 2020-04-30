@@ -92,6 +92,11 @@ export default class TaskEdit extends AbstractComponent {
           </article>`;
   }
 
+  setSubmitListener(listener) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, listener);
+  }
+
   _createRepeatingDaysMarkup(days, repeatingDays) {
     return days.map((day, index) => {
       const isChecked = repeatingDays[day];
