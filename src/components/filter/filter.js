@@ -1,25 +1,42 @@
 import AbstractComponent from "../abstract-component";
 
-export default class Filter extends AbstractComponent {
-  constructor(filter, count, isChecked) {
-    super();
+const FILTER_NAMES = [
+  `all`,
+  `overdue`,
+  `today`,
+  `favorites`,
+  `repeating`,
+  `archive`
+];
 
-    this._filter = filter;
-    this._count = count;
-    this._isChecked = isChecked;
-    this._element = null;
+export default class Filter extends AbstractComponent {
+  getTemplate() {
+    return (
+      `<section class="main__filter filter container">
+            ${this._createFiltersMarkup()}
+       </section>`
+    );
   }
 
-  getTemplate() {
-    return `<input
-              type="radio"
-              id="filter__${this._filter}"
-              class="filter__input visually-hidden"
-              name="filter"
-              ${this._isChecked ? `checked` : ``}
-            />
-            <label for="filter__${this._filter}" class="filter__label"
-              >${this._filter} <span class="filter__${this._filter}-count">${this._count}</span></label
-            >`;
+  _createFilterMarkup(name, isChecked) {
+    const count = Math.floor(Math.random() * 20);
+    return (
+      `<input
+            type="radio"
+            id="filter__${name}"
+            class="filter__input visually-hidden"
+            name="filter"
+            ${isChecked ? `checked` : ``}
+       />
+       <label for="filter__${name}" class="filter__label"
+            >${name} <span class="filter__${name}-count">${count}</span></label
+       >`
+    ).trim();
+  }
+
+  _createFiltersMarkup() {
+    return FILTER_NAMES.map((filter, i) =>
+      this._createFilterMarkup(filter, i === 0))
+      .join(`\n`);
   }
 }

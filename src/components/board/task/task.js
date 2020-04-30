@@ -1,6 +1,6 @@
-import AbstractComponent from "../abstract-component";
-import {MONTHS_NAMES} from "../../util/data";
-import {formatTime} from "../../util/util";
+import AbstractComponent from "../../abstract-component";
+import {MONTHS_NAMES} from "../../../util/data";
+import {formatTime} from "../../../util/common";
 
 export default class Task extends AbstractComponent {
   constructor(task) {
@@ -23,7 +23,8 @@ export default class Task extends AbstractComponent {
     const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
     const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
 
-    return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+    return (
+      `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -65,6 +66,7 @@ export default class Task extends AbstractComponent {
                 </div>
               </div>
             </div>
-          </article>`;
+          </article>`
+    ).trim();
   }
 }

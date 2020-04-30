@@ -1,6 +1,6 @@
-import AbstractComponent from "../abstract-component";
-import {COLORS, DAYS, MONTHS_NAMES} from "../../util/data";
-import {formatTime} from "../../util/util";
+import AbstractComponent from "../../abstract-component";
+import {COLORS, DAYS, MONTHS_NAMES} from "../../../util/data";
+import {formatTime} from "../../../util/common";
 
 export default class TaskEdit extends AbstractComponent {
   constructor(task) {

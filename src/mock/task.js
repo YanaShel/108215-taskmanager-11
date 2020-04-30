@@ -1,5 +1,5 @@
 import {COLORS} from "../util/data";
-import {getRandomDate, getRandomArrayItem} from "../util/util";
+import {getRandomDate, getRandomArrayItem} from "../util/common";
 
 
 const TASK_DESCRIPTIONS = [

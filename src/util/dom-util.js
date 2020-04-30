@@ -6,32 +6,33 @@ export const RenderPosition = {
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
-  if (newElement.children.length >= 2) {
-    return newElement.children;
-  } else {
-    return newElement.firstChild;
+  return newElement.firstChild;
+};
+
+export const render = (container, component, place = RenderPosition.BEFORE_END) => {
+  switch (place) {
+    case RenderPosition.AFTER_BEGIN:
+      container.prepend(component.getElement());
+      break;
+    case RenderPosition.BEFORE_END:
+      container.append(component.getElement());
+      break;
   }
 };
 
-export const render = (container, element, place = RenderPosition.BEFORE_END) => {
-  switch (place) {
-    case RenderPosition.AFTER_BEGIN:
-      if (element.length > 1) {
-        Array.from(element).forEach((it) => {
-          container.prepend(it);
-        });
-      } else {
-        container.prepend(element);
-      }
-      break;
-    case RenderPosition.BEFORE_END:
-      if (element.length > 1) {
-        Array.from(element).forEach((it) => {
-          container.append(it);
-        });
-      } else {
-        container.append(element);
-      }
-      break;
+export const replace = (newComponent, oldComponent) => {
+  const parentElement = oldComponent.getElement().parentElement;
+  const newElement = newComponent.getElement();
+  const oldElement = oldComponent.getElement();
+
+  const isExistElements = !!(parentElement && newElement && oldElement);
+
+  if (isExistElements && parentElement.contains(oldElement)) {
+    parentElement.replaceChild(newElement, oldElement);
   }
+};
+
+export const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
 };
