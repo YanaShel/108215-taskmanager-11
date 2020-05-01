@@ -1,11 +1,8 @@
-import Task from "../components/board/task/task";
-import TaskEdit from "../components/board/task/task-edit";
 import Sort from "../components/board/sort";
 import NoTasks from "../components/board/no-tasks";
 import Tasks from "../components/board/task/tasks";
 import LoadMoreButton from "../components/board/load-more-button";
-import {remove, render, replace} from "../util/dom-util";
-import {Key} from "../util/common";
+import {remove, render} from "../util/dom-util";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
@@ -51,41 +48,4 @@ export default class BoardController {
       }
     });
   }
-
-  _renderTask(taskListElement, task) {
-
-    const replaceTaskToEdit = () => {
-      replace(taskEditCard, taskCard);
-    };
-
-    const replaceEditToTask = () => {
-      replace(taskCard, taskEditCard);
-    };
-
-    const onEscKeyDown = (evt) => {
-      const isEscKey = evt.key === Key.ESCAPE;
-
-      if (isEscKey) {
-        replaceEditToTask();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    const taskCard = new Task(task);
-    taskCard.setEditButtonClickListener(() => {
-      replaceTaskToEdit();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    const taskEditCard = new TaskEdit(task);
-    taskEditCard.setSubmitListener((evt) => {
-      evt.preventDefault();
-      replaceEditToTask();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(taskListElement, taskCard);
-
-  }
-
 }
