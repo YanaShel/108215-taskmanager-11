@@ -21,6 +21,10 @@ export default class TaskController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._task.setArchiveButtonClickListener(() => {});
+
+    this._task.setFavoriteButtonClickListener(() => {});
+
     this._taskEdit.setSubmitListener((evt) => {
       evt.preventDefault();
       this._replaceEditToTask();

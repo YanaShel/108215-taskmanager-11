@@ -10,7 +10,7 @@ export default class Task extends AbstractComponent {
   }
 
   getTemplate() {
-    const {description, dueDate, color, repeatingDays, isArchive, isFavorite} = this._task;
+    const {description, dueDate, color, repeatingDays} = this._task;
 
     const isExpired = dueDate instanceof Date && dueDate < Date.now();
     const isDateShowing = !!dueDate;
@@ -20,26 +20,18 @@ export default class Task extends AbstractComponent {
 
     const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
     const deadlineClass = isExpired ? `card--deadline` : ``;
-    const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
-    const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;
+    const editButton = this._createButtonMarkup(`edit`);
+    const archiveButton = this._createButtonMarkup(`archive`, !this._task.isArchive);
+    const favoriteButton = this._createButtonMarkup(`favorite`, !this._task.isFavorite);
 
     return (
       `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
-                  <button type="button" class="card__btn card__btn--edit">
-                    edit
-                  </button>
-                  <button type="button" class="card__btn card__btn--archive  ${archiveButtonInactiveClass}">
-                    archive
-                  </button>
-                  <button
-                    type="button"
-                    class="card__btn card__btn--favorites card__btn--favorites ${favoriteButtonInactiveClass}"
-                  >
-                    favorites
-                  </button>
+                    ${editButton}
+                    ${archiveButton}
+                    ${favoriteButton}
                 </div>
 
                 <div class="card__color-bar">
@@ -70,8 +62,27 @@ export default class Task extends AbstractComponent {
     ).trim();
   }
 
+  _createButtonMarkup(name, isActive = true) {
+    return (
+      `<button
+            type="button"
+            class="card__btn card__btn--${name} ${isActive ? `` : `card__btn--disabled`}"
+        >`
+    );
+  }
+
   setEditButtonClickListener(listener) {
     this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, listener);
+  }
+
+  setFavoriteButtonClickListener(listener) {
+    this.getElement().querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, listener);
+  }
+
+  setArchiveButtonClickListener(listener) {
+    this.getElement().querySelector(`.card__btn--archive`)
       .addEventListener(`click`, listener);
   }
 }
