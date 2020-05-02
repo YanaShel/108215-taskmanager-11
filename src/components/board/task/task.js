@@ -67,7 +67,8 @@ export default class Task extends AbstractComponent {
       `<button
             type="button"
             class="card__btn card__btn--${name} ${isActive ? `` : `card__btn--disabled`}"
-        >`
+        >${name}
+       </button>`
     );
   }
 
@@ -77,7 +78,7 @@ export default class Task extends AbstractComponent {
   }
 
   setFavoriteButtonClickListener(listener) {
-    this.getElement().querySelector(`.card__btn--favorites`)
+    this.getElement().querySelector(`.card__btn--favorite`)
       .addEventListener(`click`, listener);
   }
 

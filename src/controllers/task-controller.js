@@ -4,8 +4,9 @@ import {replace, render} from "../util/dom-util";
 import {Key} from "../util/common";
 
 export default class TaskController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
     this._task = null;
     this._task = null;
 
@@ -21,9 +22,17 @@ export default class TaskController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._task.setArchiveButtonClickListener(() => {});
+    this._task.setArchiveButtonClickListener(() => {
+      this._onDataChange(this, task, Object.assign({}, task, {
+        isArchive: !task.isArchive,
+      }));
+    });
 
-    this._task.setFavoriteButtonClickListener(() => {});
+    this._task.setFavoriteButtonClickListener(() => {
+      this._onDataChange(this, task, Object.assign({}, task, {
+        isFavorite: !task.isFavorite,
+      }));
+    });
 
     this._taskEdit.setSubmitListener((evt) => {
       evt.preventDefault();
