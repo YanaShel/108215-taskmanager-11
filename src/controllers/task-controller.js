@@ -3,10 +3,17 @@ import TaskEdit from "../components/board/task/task-edit";
 import {replace, render} from "../util/dom-util";
 import {Key} from "../util/common";
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 export default class TaskController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
     this._task = null;
     this._task = null;
 
@@ -14,6 +21,8 @@ export default class TaskController {
   }
 
   render(task) {
+    const oldTask = this._task;
+    const oldTaskEdit = this._taskEdit;
     this._task = new Task(task);
     this._taskEdit = new TaskEdit(task);
 
@@ -40,16 +49,31 @@ export default class TaskController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    render(this._container, this._task);
+    if (oldTask && oldTaskEdit) {
+      replace(this._task, oldTask);
+      replace(this._taskEdit, oldTaskEdit);
+    } else {
+      render(this._container, this._task);
+    }
+  }
 
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToTask();
+    }
   }
 
   _replaceTaskToEdit() {
+    this._onViewChange();
     replace(this._taskEdit, this._task);
+    this._mode = Mode.EDIT;
   }
 
   _replaceEditToTask() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._taskEdit.reset();
     replace(this._task, this._taskEdit);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
