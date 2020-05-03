@@ -1,29 +1,37 @@
-import AbstractComponent from "../../abstract-component";
+import AbstractSmartComponent from "../../abstract-smart-component";
 import {COLORS, DAYS, MONTHS_NAMES} from "../../../util/data";
 import {formatTime} from "../../../util/common";
 
-export default class TaskEdit extends AbstractComponent {
+export default class TaskEdit extends AbstractSmartComponent {
   constructor(task) {
     super();
 
     this._task = task;
+    this._isDateShowing = !!task.dueDate;
+    this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
+    this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+    this._submitListener = null;
+    this._setDateDeadlineButtonClickListener();
+    this._setRepeatStatusButtonClickListener();
+    this._setRepeatDayButtonClickListener();
   }
 
   getTemplate() {
-    const {description, dueDate, color, repeatingDays} = this._task;
+    const {description, dueDate, color} = this._task;
 
     const isExpired = dueDate instanceof Date && dueDate < Date.now();
-    const isDateShowing = !!dueDate;
 
-    const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
-    const time = isDateShowing ? formatTime(dueDate) : ``;
+    const isBlockSaveButton = (this._isDateShowing && this._isRepeatingTask) ||
+      (this._isRepeatingTask && !this._isRepeating(this._activeRepeatingDays));
 
-    const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
-    const repeatClass = isRepeatingTask ? `card--repeat` : ``;
+    const date = (this._isDateShowing && dueDate) ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
+    const time = (this._isDateShowing && dueDate) ? formatTime(dueDate) : ``;
+
+    const repeatClass = this._isRepeatingTask ? `card--repeat` : ``;
     const deadlineClass = isExpired ? `card--deadline` : ``;
 
     const colorsMarkup = this._createColorsMarkup(COLORS, color);
-    const repeatingDaysMarkup = this._createRepeatingDaysMarkup(DAYS, repeatingDays);
+    const repeatingDaysMarkup = this._createRepeatingDaysMarkup(DAYS, this._activeRepeatingDays);
 
     return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
             <form class="card__form" method="get">
@@ -48,10 +56,10 @@ export default class TaskEdit extends AbstractComponent {
                   <div class="card__details">
                     <div class="card__dates">
                       <button class="card__date-deadline-toggle" type="button">
-                        date: <span class="card__date-status">${isDateShowing ? `yes` : `no`}</span>
+                        date: <span class="card__date-status">${this._isDateShowing ? `yes` : `no`}</span>
                       </button>
 
-                      ${isDateShowing ? `<fieldset class="card__date-deadline">
+                      ${this._isDateShowing ? `<fieldset class="card__date-deadline">
                         <label class="card__input-deadline-wrap">
                           <input
                             class="card__date"
@@ -64,10 +72,10 @@ export default class TaskEdit extends AbstractComponent {
                       </fieldset>` : `` }
 
                       <button class="card__repeat-toggle" type="button">
-                        repeat:<span class="card__repeat-status">${isRepeatingTask ? `yes` : `no`}</span>
+                        repeat:<span class="card__repeat-status">${this._isRepeatingTask ? `yes` : `no`}</span>
                       </button>
 
-                      ${isRepeatingTask ? `<fieldset class="card__repeat-days">
+                      ${this._isRepeatingTask ? `<fieldset class="card__repeat-days">
                         <div class="card__repeat-days-inner">
                           ${repeatingDaysMarkup}
                          </div>
@@ -84,7 +92,7 @@ export default class TaskEdit extends AbstractComponent {
                  </div>
 
                 <div class="card__status-btns">
-                  <button class="card__save" type="submit">save</button>
+                  <button class="card__save" type="submit" ${isBlockSaveButton ? `disabled` : ``}>save</button>
                   <button class="card__delete" type="button">delete</button>
                 </div>
               </div>
@@ -92,9 +100,60 @@ export default class TaskEdit extends AbstractComponent {
           </article>`;
   }
 
+  recoveryListeners() {
+    this.setSubmitListener(this._submitListener);
+    this._setDateDeadlineButtonClickListener();
+    this._setRepeatStatusButtonClickListener();
+    this._setRepeatDayButtonClickListener();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  reset() {
+    const task = this._task;
+    this._isDateShowing = Object.values(task.repeatingDays).some(Boolean);
+    this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+
+    this.rerender();
+  }
+
+  _isRepeating(repeatingDays) {
+    return Object.values(repeatingDays).some(Boolean);
+  }
+
+  _setDateDeadlineButtonClickListener() {
+    this.getElement().querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, () => {
+        this._isDateShowing = !this._isDateShowing;
+        this.rerender();
+      });
+  }
+
+  _setRepeatStatusButtonClickListener() {
+    this.getElement().querySelector(`.card__repeat-toggle`)
+      .addEventListener(`click`, () => {
+        this._isRepeatingTask = !this._isRepeatingTask;
+        this.rerender();
+      });
+  }
+
+  _setRepeatDayButtonClickListener() {
+    const repeatDays = this.getElement().querySelector(`.card__repeat-days`);
+    if (repeatDays) {
+      repeatDays.addEventListener(`change`, (evt) => {
+        this._activeRepeatingDays[evt.target.value] = evt.target.checked;
+        this.rerender();
+      });
+    }
+  }
+
   setSubmitListener(listener) {
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, listener);
+
+    this._submitListener = listener;
   }
 
   _createRepeatingDaysMarkup(days, repeatingDays) {
