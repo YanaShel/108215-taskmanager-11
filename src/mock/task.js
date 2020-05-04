@@ -23,7 +23,7 @@ const getRandomRepeatingDays = () => {
 };
 
 const generateTask = () => {
-  const dueDate = Math.random() > 0.5 ? null : getRandomDate();
+  const dueDate = getRandomDate();
   return {
     description: getRandomArrayItem(TASK_DESCRIPTIONS),
     dueDate,
