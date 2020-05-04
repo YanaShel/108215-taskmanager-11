@@ -1,31 +1,60 @@
 import AbstractComponent from "../abstract-component";
 
-const SORT_ITEMS = [
-  `SORT BY DEFAULT`,
-  `SORT BY DATE up`,
-  `SORT BY DATE down`
-];
+export const SortType = {
+  'SORT BY DEFAULT': `default`,
+  'SORT BY DATE up': `date-up`,
+  'SORT BY DATE down': `date-down`,
+};
 
 export default class Sort extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currenSortType = `default`;
+  }
+
   getTemplate() {
     return (
       `<div class="board__filter-list">
-          ${this._createFilterItemsMarkup()}
+          ${this._getFilterItemsMarkup()}
        </div>`
     );
   }
 
-  _createFilterItemMarkup(name) {
+  getSortType() {
+    return this._currenSortType;
+  }
+
+  setSortTypeChangeListener(listener) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName.toLowerCase() !== `a`) {
+        return;
+      }
+
+      const sortType = evt.target.dataset.sortType;
+
+      if (this._currenSortType === sortType) {
+        return;
+      }
+
+      this._currenSortType = sortType;
+      listener(this._currenSortType);
+    });
+  }
+
+  _createFilterItemMarkup(name, sortType) {
     return (
-      `<a href="#" class="board__filter" data-sort-type="default">
+      `<a href="#" class="board__filter" data-sort-type="${sortType}">
             ${name}
        </a>`
     ).trim();
   }
 
-  _createFilterItemsMarkup() {
-    return SORT_ITEMS.map((item) =>
-      this._createFilterItemMarkup(item))
+  _getFilterItemsMarkup() {
+    return Object.entries(SortType).map(([name, sortType]) =>
+      this._createFilterItemMarkup(name, sortType))
       .join(`\n`);
   }
 }
