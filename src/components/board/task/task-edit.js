@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "../../abstract-smart-component";
-import {COLORS, DAYS, MONTHS_NAMES} from "../../../util/data";
-import {formatTime} from "../../../util/common";
+import {COLORS, DAYS} from "../../../util/data";
+import {formatTime, formatDate} from "../../../util/common";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -31,7 +31,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     const isBlockSaveButton = (this._isDateShowing && this._isRepeatingTask) ||
       (this._isRepeatingTask && !this._isRepeating(this._activeRepeatingDays));
 
-    const date = (this._isDateShowing && this._dueDate) ? `${this._dueDate.getDate()} ${MONTHS_NAMES[this._dueDate.getMonth()]}` : ``;
+    const date = (this._isDateShowing && this._dueDate) ? formatDate(this._dueDate) : ``;
     const time = (this._isDateShowing && this._dueDate) ? formatTime(this._dueDate) : ``;
 
     const repeatClass = this._isRepeatingTask ? `card--repeat` : ``;

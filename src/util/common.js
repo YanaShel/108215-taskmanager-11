@@ -1,18 +1,17 @@
+import moment from "moment";
+
 export const Key = {
   ESCAPE: `Escape`,
-};
-
-const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
 };
 
 const getRandomSign = () => Math.random() > 0.5 ? 1 : -1;
 
 export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours() % 12);
-  const minutes = castTimeFormat(date.getMinutes());
+  return moment(date).format(`hh:mm`);
+};
 
-  return `${hours}:${minutes}`;
+export const formatDate = (date) => {
+  return moment(date).format(`DD MMMM`);
 };
 
 export const getRandomArrayItem = (array) => {

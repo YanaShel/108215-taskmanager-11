@@ -1,6 +1,5 @@
 import AbstractComponent from "../../abstract-component";
-import {MONTHS_NAMES} from "../../../util/data";
-import {formatTime} from "../../../util/common";
+import {formatTime, formatDate} from "../../../util/common";
 
 export default class Task extends AbstractComponent {
   constructor(task) {
@@ -17,7 +16,7 @@ export default class Task extends AbstractComponent {
     const isExpired = this._dueDate instanceof Date && this._dueDate < Date.now();
     const isDateShowing = !!this._dueDate;
 
-    const date = isDateShowing ? `${this._dueDate.getDate()} ${MONTHS_NAMES[this._dueDate.getMonth()]}` : ``;
+    const date = isDateShowing ? formatDate(this._dueDate) : ``;
     const time = isDateShowing ? formatTime(this._dueDate) : ``;
 
     const repeatClass = Object.values(this._repeatingDays).some(Boolean) ? `card--repeat` : ``;
