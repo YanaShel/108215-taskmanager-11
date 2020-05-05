@@ -1,31 +1,32 @@
 import AbstractComponent from "../../abstract-component";
-import {MONTHS_NAMES} from "../../../util/data";
-import {formatTime} from "../../../util/common";
+import {formatTime, formatDate} from "../../../util/common";
 
 export default class Task extends AbstractComponent {
   constructor(task) {
     super();
 
     this._task = task;
+    this._description = task.description;
+    this._dueDate = task.dueDate;
+    this._color = task.color;
+    this._repeatingDays = task.repeatingDays;
   }
 
   getTemplate() {
-    const {description, dueDate, color, repeatingDays} = this._task;
+    const isExpired = this._dueDate instanceof Date && this._dueDate < Date.now();
+    const isDateShowing = !!this._dueDate;
 
-    const isExpired = dueDate instanceof Date && dueDate < Date.now();
-    const isDateShowing = !!dueDate;
+    const date = isDateShowing ? formatDate(this._dueDate) : ``;
+    const time = isDateShowing ? formatTime(this._dueDate) : ``;
 
-    const date = isDateShowing ? `${dueDate.getDate()} ${MONTHS_NAMES[dueDate.getMonth()]}` : ``;
-    const time = isDateShowing ? formatTime(dueDate) : ``;
-
-    const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+    const repeatClass = Object.values(this._repeatingDays).some(Boolean) ? `card--repeat` : ``;
     const deadlineClass = isExpired ? `card--deadline` : ``;
     const editButton = this._createButtonMarkup(`edit`);
     const archiveButton = this._createButtonMarkup(`archive`, !this._task.isArchive);
     const favoriteButton = this._createButtonMarkup(`favorite`, !this._task.isFavorite);
 
     return (
-      `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+      `<article class="card card--${this._color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -41,7 +42,7 @@ export default class Task extends AbstractComponent {
                 </div>
 
                 <div class="card__textarea-wrap">
-                  <p class="card__text">${description}</p>
+                  <p class="card__text">${this._description}</p>
                 </div>
 
                 <div class="card__settings">
